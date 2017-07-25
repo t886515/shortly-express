@@ -46,46 +46,23 @@ app.post('/login', (req, res) => {
   var password = req.body.password;
   
   new User({ username: username }).fetch().then(function(found) {
-    //console.log(found);
-    // console.log(found);
-    //console.log();
+
     if (!found) {
       res.redirect('/login');
     } else {
-      // var hashVersion = crypto.createHash('sha1').update(password).digest('hex').slice(0, 5);
-      bcrypt.hash(password, null, null, function(err, hash) {
-        console.log(hash, 'this is hashhhh');
-        console.log(found.attributes.password);
-        bcrypt.compare(hash, found.attributes.password, function(err, res) {
-          console.log(res);
-          console.log(err);
-          if (res) {
-            req.session.loggedIn = true;
-            res.redirect('/');
-          }
-        });
+      bcrypt.compare(password, found.attributes.password, function(err, result) {
+        console.log(result, 'true or false?');
+        console.log(found.attributes.password, 'is this hashed?');
+        if (result) {
+          req.session.loggedIn = true;
+          res.redirect('/');
+        }
       });
-      // bcrypt.compare(password, found.attributes.password, function(err, res) {
-      //   console.log(res);
-      //   console.log(err);
-      //   if (res) {
-      //     req.session.loggedIn = true;
-      //     res.redirect('/');
-      //   }
-      // });
-    //console.log(found.attributes.password);
-    //   if (hashVersion === found.attributes.password) {
-    //     req.session.loggedIn = true;
-    //     res.redirect('/');
-    //   }
-    // //
+
     }
     
   });
-  //res.redirect('/');
-  //Get user data from request
-    //compare it with whats sotred in our db
-    //If it matches give thema session and redirect to '/'
+
 });
 
 app.get('/logout', (req, res) => {
@@ -96,10 +73,7 @@ app.get('/logout', (req, res) => {
 
 app.get('/login', (req, res) => {
   res.render('login');
-  // if (doesUserExist) {
-  //   res.render('index');
-  // }
-  // res.redirect('/signup');
+
 });
 
 app.get('/signup', (req, res) => {
